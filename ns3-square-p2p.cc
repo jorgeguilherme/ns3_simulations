@@ -14,12 +14,12 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-/* Autor: Jorge Guilherme Silva dos Santos
-	Universidade de Brasilia
+/* Author: Jorge Guilherme Silva dos Santos
+	Universidade de Brasilia - Brazil
 	contato at jorgeguilherme.eng.br
 */
 
-// Adicionar bibliotecas b�sicas contendo o n�cleo do simulador, os n�s e enlaces.
+// Basic NS3 libraries
 
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -31,33 +31,33 @@
 
 using namespace ns3;		// Como sempre
 
-// Defini��o do log
+// Log definition
 NS_LOG_COMPONENT_DEFINE ("Experimento4");
 
-// Fun��o principal do c�digo
 int
 main (int argc, char *argv[])
 {
-	//Cria��o das vari�veis que receber� os valores passados por linha de comando
+	//Variáveis que receberão os valores da linha de comando
 	std::string saidaAscii;
 	std::string saidaPcap;
 
-	//Cria��o dos argumentos de linha de comando para especifica��o dos arquivos de sa�da
+	// Criação dos argumentos de linha de comanda para especificação dos arquivos
+	// de saída
 	CommandLine cmd;
-	cmd.AddValue("ascii", "Nome do arquivo de sa�da ASCII: exemplo.tr", saidaAscii);
-	cmd.AddValue("pcap", "Nome do arquivo de sa�da PCAP (sem extens�o)", saidaPcap);
+	cmd.AddValue("ascii", "Nome do arquivo de saída ASCII: exemplo.tr", saidaAscii);
+	cmd.AddValue("pcap", "Nome do arquivo de saída PCAP (sem extensão)", saidaPcap);
 	cmd.Parse(argc, argv);
 
 	Time::SetResolution (Time::NS);
-	// Tipo de log definido para a aplica��o
+	// Tipo de log definido para a aplicação
 	LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
 	LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
-	// Define e cria quatro n�s
+	// Define e cria quatro nós
 	NodeContainer nodes;
 	nodes.Create (4);
 
-	// Configurar a pilha de protocolo IP nos n�s
+	// Configurar a pilha de protocolo IP nos nós
 	InternetStackHelper stack;
 	stack.Install (nodes);
 
@@ -70,8 +70,8 @@ main (int argc, char *argv[])
 		n3 ===== n2 <- pTP23
 	*/
 
-	// Separa os n�s em diferentes containers para facilitar depois a cria��o dos Devices
-	// Essa separa��o segue a l�gica que ir� aparecer para a cria��o dos enlaces ponto a ponto
+	// Separa os nós em diferentes containers para facilitar depois a criação dos Devices
+	// Essa separação segue a lógica que irá aparecer para a criação dos enlaces ponto a ponto
 	NodeContainer n0n1 = NodeContainer (nodes.Get(0), nodes.Get(1));
 	NodeContainer n1n2 = NodeContainer (nodes.Get(1), nodes.Get(2));
 	NodeContainer n2n3 = NodeContainer (nodes.Get(2), nodes.Get(3));
@@ -83,7 +83,7 @@ main (int argc, char *argv[])
 	PointToPointHelper pTP23;
 	PointToPointHelper pTP30;
 
-	// Configura a taxa da conex�o dos enlaces.
+	// Configura a taxa da conexão dos enlaces.
 	pTP01.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
 	pTP12.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
 	pTP23.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
@@ -105,14 +105,14 @@ main (int argc, char *argv[])
 	d2d3 = pTP23.Install (n2n3);
 	d3d0 = pTP30.Install (n3n0);
 
-	// Configura os endere�os IP e m�scaras de rede
+	// Configura os endereços IP e máscaras de rede
 	// Cada enlace ponto a ponto com uma rede
 	Ipv4AddressHelper ipv4;
 	ipv4.SetBase ("10.1.1.0", "255.255.255.0");
 	Ipv4InterfaceContainer i0i1 = ipv4.Assign (d0d1);
 
 	ipv4.SetBase ("10.2.2.0", "255.255.255.0");
-	Ipv4InterfaceContainer i1i2 = ipv4.Assign (d1d2);
+	Ipv4InterfaceContainer i1i2 = ipv4.Assign (d1d2[]);
 
 	ipv4.SetBase ("10.3.3.0", "255.255.255.0");
 	Ipv4InterfaceContainer i2i3 = ipv4.Assign (d2d3);
@@ -120,24 +120,24 @@ main (int argc, char *argv[])
 	ipv4.SetBase ("10.4.4.0", "255.255.255.0");
 	Ipv4InterfaceContainer i3i0 = ipv4.Assign (d3d0);
 
-	// Cria o servidor da aplica��o de Echo na porta 9
+	// Cria o servidor da aplicação de Echo na porta 9
 	UdpEchoServerHelper echoServer (9);
 
-	// Configura o segundo n� como servidor da aplica��o de Echo
+	// Configura o segundo nó como servidor da aplicação de Echo
 	ApplicationContainer serverApps = echoServer.Install (n1n2.Get (1));
 
-	// Define o tempo de in�cio e final da aplica��o no servidor
+	// Define o tempo de início e final da aplicação no servidor
 	serverApps.Start (Seconds (1.0));
 	serverApps.Stop (Seconds (10.0));
 
-	// Configura o endere�o IP do servidor e a porta no cliente da aplica��o de Echo
+	// Configura o endereço IP do servidor e a porta no cliente da aplicação de Echo
 	Ipv4Address serverAddress = i1i2.GetAddress (1);
 	Ipv4Address serverAddress2 = i2i3.GetAddress (0);
 
 	UdpEchoClientHelper echoClient1 (serverAddress, 9);
 	UdpEchoClientHelper echoClient2 (serverAddress2, 9);
 
-	// Roteamento est�tico
+	// Roteamento estático
 	Ptr<Ipv4> ipv40 = nodes.Get(0)->GetObject<Ipv4> ();
 	Ptr<Ipv4> ipv41 = nodes.Get(1)->GetObject<Ipv4> ();
 	Ptr<Ipv4> ipv42 = nodes.Get(2)->GetObject<Ipv4> ();
@@ -161,7 +161,7 @@ main (int argc, char *argv[])
 	Ptr<Ipv4StaticRouting> staticRouting230 = ipv4RoutingHelper.GetStaticRouting (ipv42);
 	staticRouting230->AddHostRouteTo (i3i0.GetAddress(1), i2i3.GetAddress(1), 2);
 
-	// Configura o n�mero m�ximo de pacotes enviados pelo cliente
+	// Configura o número máximo de pacotes enviados pelo cliente
 	echoClient1.SetAttribute ("MaxPackets", UintegerValue (1));
 	echoClient2.SetAttribute ("MaxPackets", UintegerValue (1));
 
@@ -169,16 +169,16 @@ main (int argc, char *argv[])
 	echoClient1.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
 	echoClient2.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
 
-	// Configura o tamanho m�ximo do pacote no cliente
+	// Configura o tamanho máximo do pacote no cliente
 	echoClient1.SetAttribute ("PacketSize", UintegerValue (1024));
 	echoClient2.SetAttribute ("PacketSize", UintegerValue (1024));
 
-	// Configura o cliente da aplica��o no primeiro n�
+	// Configura o cliente da aplicação no primeiro nó
 	ApplicationContainer clientApps1 = echoClient1.Install (n0n1.Get(0));
 	ApplicationContainer clientApps2 = echoClient2.Install (n0n1.Get(0));
 
 
-	// Define o tempo de in�cio e final da aplica��o no cliente
+	// Define o tempo de início e final da aplicação no cliente
 	clientApps1.Start (Seconds (2.0));
 	clientApps1.Stop (Seconds (10.0));
 	clientApps2.Start (Seconds (2.0));
@@ -195,10 +195,10 @@ main (int argc, char *argv[])
 	pTP30.EnableAsciiAll (ascii.CreateFileStream (saidaAscii+".tr"));
 	pTP30.EnablePcapAll (saidaAscii);
 
-	// Carrega a simula��o ap�s todas as defini��es
+	// Carrega a simulação após todas as definições
 	Simulator::Run ();
 
-	// Encerra a simula��o no final
+	// Encerra a simulação no final
 	Simulator::Destroy ();
 	return 0;
 }
