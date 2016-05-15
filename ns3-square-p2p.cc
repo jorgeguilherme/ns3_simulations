@@ -111,7 +111,7 @@ main (int argc, char *argv[])
 	Ipv4InterfaceContainer i0i1 = ipv4.Assign (d0d1);
 
 	ipv4.SetBase ("10.2.2.0", "255.255.255.0");
-	Ipv4InterfaceContainer i1i2 = ipv4.Assign (d1d2[]);
+	Ipv4InterfaceContainer i1i2 = ipv4.Assign (d1d2);
 
 	ipv4.SetBase ("10.3.3.0", "255.255.255.0");
 	Ipv4InterfaceContainer i2i3 = ipv4.Assign (d2d3);
