@@ -19,7 +19,7 @@
 	contato at jorgeguilherme.eng.br
 */
 
-// Adicionar bibliotecas básicas contendo o núcleo do simulador, os nós e enlaces.
+// Adicionar bibliotecas bï¿½sicas contendo o nï¿½cleo do simulador, os nï¿½s e enlaces.
 
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
@@ -31,47 +31,47 @@
 
 using namespace ns3;		// Como sempre
 
-// Definição do log
+// Definiï¿½ï¿½o do log
 NS_LOG_COMPONENT_DEFINE ("Experimento4");
 
-// Função principal do código
+// Funï¿½ï¿½o principal do cï¿½digo
 int
 main (int argc, char *argv[])
 {
-	//Criação das variáveis que receberá os valores passados por linha de comando
+	//Criaï¿½ï¿½o das variï¿½veis que receberï¿½ os valores passados por linha de comando
 	std::string saidaAscii;
 	std::string saidaPcap;
 
-	//Criação dos argumentos de linha de comando para especificação dos arquivos de saída
+	//Criaï¿½ï¿½o dos argumentos de linha de comando para especificaï¿½ï¿½o dos arquivos de saï¿½da
 	CommandLine cmd;
-	cmd.AddValue("ascii", "Nome do arquivo de saída ASCII: exemplo.tr", saidaAscii);
-	cmd.AddValue("pcap", "Nome do arquivo de saída PCAP (sem extensão)", saidaPcap);
+	cmd.AddValue("ascii", "Nome do arquivo de saï¿½da ASCII: exemplo.tr", saidaAscii);
+	cmd.AddValue("pcap", "Nome do arquivo de saï¿½da PCAP (sem extensï¿½o)", saidaPcap);
 	cmd.Parse(argc, argv);
 
 	Time::SetResolution (Time::NS);
-	// Tipo de log definido para a aplicação
+	// Tipo de log definido para a aplicaï¿½ï¿½o
 	LogComponentEnable ("UdpEchoClientApplication", LOG_LEVEL_INFO);
 	LogComponentEnable ("UdpEchoServerApplication", LOG_LEVEL_INFO);
 
-	// Define e cria quatro nós
+	// Define e cria quatro nï¿½s
 	NodeContainer nodes;
 	nodes.Create (4);
 
-	// Configurar a pilha de protocolo IP nos nós
+	// Configurar a pilha de protocolo IP nos nï¿½s
 	InternetStackHelper stack;
 	stack.Install (nodes);
 
 	/* Aqui, NA = n0, NB = n1, NC = n3, ND = n2
 	Para corresponder ao solicitado no roteiro
-	
+
 		n0 ===== n1 <- pTP01
 		||		 ||
 		||		 ||
 		n3 ===== n2 <- pTP23
 	*/
 
-	// Separa os nós em diferentes containers para facilitar depois a criação dos Devices
-	// Essa separação segue a lógica que irá aparecer para a criação dos enlaces ponto a ponto
+	// Separa os nï¿½s em diferentes containers para facilitar depois a criaï¿½ï¿½o dos Devices
+	// Essa separaï¿½ï¿½o segue a lï¿½gica que irï¿½ aparecer para a criaï¿½ï¿½o dos enlaces ponto a ponto
 	NodeContainer n0n1 = NodeContainer (nodes.Get(0), nodes.Get(1));
 	NodeContainer n1n2 = NodeContainer (nodes.Get(1), nodes.Get(2));
 	NodeContainer n2n3 = NodeContainer (nodes.Get(2), nodes.Get(3));
@@ -83,7 +83,7 @@ main (int argc, char *argv[])
 	PointToPointHelper pTP23;
 	PointToPointHelper pTP30;
 
-	// Configura a taxa da conexão dos enlaces.
+	// Configura a taxa da conexï¿½o dos enlaces.
 	pTP01.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
 	pTP12.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
 	pTP23.SetDeviceAttribute ("DataRate", StringValue ("100Mbps"));
@@ -105,7 +105,7 @@ main (int argc, char *argv[])
 	d2d3 = pTP23.Install (n2n3);
 	d3d0 = pTP30.Install (n3n0);
 
-	// Configura os endereços IP e máscaras de rede
+	// Configura os endereï¿½os IP e mï¿½scaras de rede
 	// Cada enlace ponto a ponto com uma rede
 	Ipv4AddressHelper ipv4;
 	ipv4.SetBase ("10.1.1.0", "255.255.255.0");
@@ -120,24 +120,24 @@ main (int argc, char *argv[])
 	ipv4.SetBase ("10.4.4.0", "255.255.255.0");
 	Ipv4InterfaceContainer i3i0 = ipv4.Assign (d3d0);
 
-	// Cria o servidor da aplicação de Echo na porta 9
+	// Cria o servidor da aplicaï¿½ï¿½o de Echo na porta 9
 	UdpEchoServerHelper echoServer (9);
 
-	// Configura o segundo nó como servidor da aplicação de Echo
+	// Configura o segundo nï¿½ como servidor da aplicaï¿½ï¿½o de Echo
 	ApplicationContainer serverApps = echoServer.Install (n1n2.Get (1));
 
-	// Define o tempo de início e final da aplicação no servidor
+	// Define o tempo de inï¿½cio e final da aplicaï¿½ï¿½o no servidor
 	serverApps.Start (Seconds (1.0));
 	serverApps.Stop (Seconds (10.0));
 
-	// Configura o endereço IP do servidor e a porta no cliente da aplicação de Echo
+	// Configura o endereï¿½o IP do servidor e a porta no cliente da aplicaï¿½ï¿½o de Echo
 	Ipv4Address serverAddress = i1i2.GetAddress (1);
 	Ipv4Address serverAddress2 = i2i3.GetAddress (0);
 
 	UdpEchoClientHelper echoClient1 (serverAddress, 9);
 	UdpEchoClientHelper echoClient2 (serverAddress2, 9);
 
-	// Roteamento estático
+	// Roteamento estï¿½tico
 	Ptr<Ipv4> ipv40 = nodes.Get(0)->GetObject<Ipv4> ();
 	Ptr<Ipv4> ipv41 = nodes.Get(1)->GetObject<Ipv4> ();
 	Ptr<Ipv4> ipv42 = nodes.Get(2)->GetObject<Ipv4> ();
@@ -161,7 +161,7 @@ main (int argc, char *argv[])
 	Ptr<Ipv4StaticRouting> staticRouting230 = ipv4RoutingHelper.GetStaticRouting (ipv42);
 	staticRouting230->AddHostRouteTo (i3i0.GetAddress(1), i2i3.GetAddress(1), 2);
 
-	// Configura o número máximo de pacotes enviados pelo cliente
+	// Configura o nï¿½mero mï¿½ximo de pacotes enviados pelo cliente
 	echoClient1.SetAttribute ("MaxPackets", UintegerValue (1));
 	echoClient2.SetAttribute ("MaxPackets", UintegerValue (1));
 
@@ -169,16 +169,16 @@ main (int argc, char *argv[])
 	echoClient1.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
 	echoClient2.SetAttribute ("Interval", TimeValue (Seconds (1.0)));
 
-	// Configura o tamanho máximo do pacote no cliente
+	// Configura o tamanho mï¿½ximo do pacote no cliente
 	echoClient1.SetAttribute ("PacketSize", UintegerValue (1024));
 	echoClient2.SetAttribute ("PacketSize", UintegerValue (1024));
 
-	// Configura o cliente da aplicação no primeiro nó
+	// Configura o cliente da aplicaï¿½ï¿½o no primeiro nï¿½
 	ApplicationContainer clientApps1 = echoClient1.Install (n0n1.Get(0));
 	ApplicationContainer clientApps2 = echoClient2.Install (n0n1.Get(0));
 
 
-	// Define o tempo de início e final da aplicação no cliente
+	// Define o tempo de inï¿½cio e final da aplicaï¿½ï¿½o no cliente
 	clientApps1.Start (Seconds (2.0));
 	clientApps1.Stop (Seconds (10.0));
 	clientApps2.Start (Seconds (2.0));
@@ -195,10 +195,10 @@ main (int argc, char *argv[])
 	pTP30.EnableAsciiAll (ascii.CreateFileStream (saidaAscii+".tr"));
 	pTP30.EnablePcapAll (saidaAscii);
 
-	// Carrega a simulação após todas as definições
+	// Carrega a simulaï¿½ï¿½o apï¿½s todas as definiï¿½ï¿½es
 	Simulator::Run ();
 
-	// Encerra a simulação no final
+	// Encerra a simulaï¿½ï¿½o no final
 	Simulator::Destroy ();
 	return 0;
 }
