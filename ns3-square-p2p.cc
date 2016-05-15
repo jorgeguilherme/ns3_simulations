@@ -16,7 +16,6 @@
 
 /* Author: Jorge Guilherme Silva dos Santos
 	Universidade de Brasilia - Brazil
-	contato at jorgeguilherme.eng.br
 */
 
 // Basic NS3 libraries
