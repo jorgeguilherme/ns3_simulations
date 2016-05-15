@@ -20,6 +20,7 @@
 */
 
 // Adicionar bibliotecas básicas contendo o núcleo do simulador, os nós e enlaces.
+
 #include "ns3/core-module.h"
 #include "ns3/network-module.h"
 #include "ns3/internet-module.h"
@@ -61,7 +62,8 @@ main (int argc, char *argv[])
 	stack.Install (nodes);
 
 	/* Aqui, NA = n0, NB = n1, NC = n3, ND = n2
-
+	Para corresponder ao solicitado no roteiro
+	
 		n0 ===== n1 <- pTP01
 		||		 ||
 		||		 ||
