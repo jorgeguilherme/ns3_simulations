@@ -83,38 +83,35 @@ void ReceivePacket (Ptr<Socket> socket)
 	rcvdPackets++;				// Linha adicionada
 	Ptr<Packet> packet;
 	while (packet = socket->Recv ())
-		{
-			//NS_LOG_UNCOND ("Received one packet!");
-			delayEst.RecordRx(packet);
-			acumulatedDelay += delayEst.GetLastDelay().GetSeconds();
-			
-		}
-		//DEBUG
+	{
+	    //NS_LOG_UNCOND ("Received one packet!");
+	    delayEst.RecordRx(packet);
+	    acumulatedDelay += delayEst.GetLastDelay().GetSeconds();
+	}
+	//DEBUG
 	//writeCounts();
 	//writeOnScreen();
 	
 }
 
-static void GenerateTraffic (Ptr<Socket> socket, uint32_t pktSize, 
-														 uint32_t pktCount, Time pktInterval )
+static void GenerateTraffic (Ptr<Socket> socket, uint32_t pktSize, uint32_t pktCount, Time pktInterval )
 	
 {
 	Ptr<Packet> packet;
 	if (pktCount > 0)
-		{	
-			packet = Create<Packet>(packetSize);
-			delayEst.PrepareTx (packet);
-			socket->Send (packet);
-			Simulator::Schedule (pktInterval, &GenerateTraffic, 
-													 socket, pktSize,pktCount-1, pktInterval);
-			sentPackets++;		//Linha adicionada
-			//DEBUG
-			//std::cout << (Simulator::Now ()).GetSeconds () << "Enviado: sentPackets = " << sentPackets << std::endl;
-		}
+	{	
+	    packet = Create<Packet>(packetSize);
+	    delayEst.PrepareTx (packet);
+	    socket->Send (packet);
+	    Simulator::Schedule (pktInterval, &GenerateTraffic, socket, pktSize,pktCount-1, pktInterval);
+	    sentPackets++;		//Linha adicionada
+	    //DEBUG
+	    //std::cout << (Simulator::Now ()).GetSeconds () << "Enviado: sentPackets = " << sentPackets << std::endl;
+	}
 	else
-		{
-			socket->Close ();
-		}
+	{
+	    socket->Close ();
+	}
 }
 
 
