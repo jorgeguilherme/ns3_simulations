@@ -44,7 +44,7 @@ std::string phyMode ("DsssRate11Mbps");
 std::string tr_name ("e6");
 double nodeSpeed = 20.0; //in m/s
 int nodePause = 0; //in s
-std::string protocolName = "AODV";		
+std::string protocolName = "AODV";
 int packetSize = 1000; // em bytes
 int numPackets = 3100; // em numero de pacotes
 Time interPacketInterval = Seconds (0.032);	// Intervalo entre pacotes
@@ -91,15 +91,15 @@ void ReceivePacket (Ptr<Socket> socket)
 	//DEBUG
 	//writeCounts();
 	//writeOnScreen();
-	
+
 }
 
 static void GenerateTraffic (Ptr<Socket> socket, uint32_t pktSize, uint32_t pktCount, Time pktInterval )
-	
+
 {
 	Ptr<Packet> packet;
 	if (pktCount > 0)
-	{	
+	{
 	    packet = Create<Packet>(packetSize);
 	    delayEst.PrepareTx (packet);
 	    socket->Send (packet);
@@ -272,7 +272,7 @@ int main (int argc, char *argv[])
 
 			//// Agenda cada uma das fontes de tráfego para iniciar a transmissão
 			Simulator::ScheduleWithContext (source->GetNode ()->GetId (),
-									Seconds (0.0), &GenerateTraffic, 
+									Seconds (0.0), &GenerateTraffic,
 									source, packetSize, numPackets, interPacketInterval);
 
 			/* Fim do código aproveitado de wifi-simples-adhoc.cc */
@@ -297,7 +297,3 @@ int main (int argc, char *argv[])
 
 	return 0;
 }
-
-
-
-
