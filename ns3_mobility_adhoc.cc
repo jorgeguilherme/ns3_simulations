@@ -64,7 +64,7 @@ static void writeCounts () {
     nSinks << " " <<
     protocolName << " " <<
     acumulatedDelay << std::endl;
-    out.close ();                                                                // Fecha arquivo
+    out.close ();               // Fecha arquivo
 }
 
 static void writeOnScreen() {
